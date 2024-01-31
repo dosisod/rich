@@ -31,6 +31,7 @@ class Panel(JupyterMixin):
         border_style (str, optional): The style of the border. Defaults to "none".
         width (Optional[int], optional): Optional width of panel. Defaults to None to auto-detect.
         height (Optional[int], optional): Optional height of panel. Defaults to None to auto-detect.
+        window_size (Optional[int], optional): When set, truncate the renderable output to only show the last N lines.
         padding (Optional[PaddingDimensions]): Optional padding around renderable. Defaults to 0.
         highlight (bool, optional): Enable automatic highlighting of panel title (if str). Defaults to False.
     """
@@ -50,6 +51,7 @@ class Panel(JupyterMixin):
         border_style: StyleType = "none",
         width: Optional[int] = None,
         height: Optional[int] = None,
+        window_size: Optional[int] = None,
         padding: PaddingDimensions = (0, 1),
         highlight: bool = False,
     ) -> None:
@@ -65,6 +67,7 @@ class Panel(JupyterMixin):
         self.border_style = border_style
         self.width = width
         self.height = height
+        self.window_size = window_size
         self.padding = padding
         self.highlight = highlight
 
@@ -83,6 +86,7 @@ class Panel(JupyterMixin):
         border_style: StyleType = "none",
         width: Optional[int] = None,
         height: Optional[int] = None,
+        window_size: Optional[int] = None,
         padding: PaddingDimensions = (0, 1),
         highlight: bool = False,
     ) -> "Panel":
@@ -99,6 +103,7 @@ class Panel(JupyterMixin):
             border_style=border_style,
             width=width,
             height=height,
+            window_size=window_size,
             padding=padding,
             highlight=highlight,
             expand=False,
@@ -222,6 +227,9 @@ class Panel(JupyterMixin):
             width=child_width, height=child_height, highlight=self.highlight
         )
         lines = console.render_lines(renderable, child_options, style=style)
+
+        if self.window_size is not None:
+            lines = lines[-self.window_size :]
 
         line_start = Segment(box.mid_left, border_style)
         line_end = Segment(f"{box.mid_right}", border_style)

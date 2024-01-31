@@ -21,4 +21,12 @@ The Panel constructor accepts a ``title`` argument which will draw a title on th
     from rich.panel import Panel
     print(Panel("Hello, [red]World!", title="Welcome", subtitle="Thank you"))
 
+Panel contents are anchored to the top of the panel, meaning if there are too many lines to display the rest get truncated. To instead anchor the content to the bottom of the panel and always show the most recent lines, use the ``window_size`` argument::
+
+    from rich import print
+    from rich.panel import Panel
+    print(Panel("\n".join(str(i) for i in range(100)), window_size=5))
+
+The above code will print the last 5 lines from the range.
+
 See :class:`~rich.panel.Panel` for details how to customize Panels.
